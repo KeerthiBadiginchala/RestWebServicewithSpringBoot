@@ -1,5 +1,6 @@
 package com.kb.restwswithspringboot.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,21 @@ public class ProductService {
 		
 		return productrepository.getAllProducts(); 
 		
+	}
+	
+	//Exception Handling Scope, Integer check
+	public List<Product> getMultipleProducts(String ids){
+		List<Product> prdList = new ArrayList<Product>();
+		
+		String[] args = ids.split(",");
+		for(int i=0;i<args.length;i++){
+			System.out.println("args["+i+"]"+args[i]);
+			System.out.println("Integer Conversion"+Integer.parseInt(args[i]));
+			Product prd = productrepository.getProductByID(Integer.parseInt(args[i]));
+			prdList.add(prd);
+		}
+		
+		return prdList; 
 	}
 	
 	public Product getProductByID(int prd_id){

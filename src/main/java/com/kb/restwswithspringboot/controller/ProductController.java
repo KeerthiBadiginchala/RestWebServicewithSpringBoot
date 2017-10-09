@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.StatusType;
 
+import com.kb.restwswithspringboot.service.ProductCategoryService;
 import com.kb.restwswithspringboot.service.ProductPriceService;
 import com.kb.restwswithspringboot.service.ProductService;
 
@@ -26,6 +27,9 @@ public class ProductController {
 	
 	@Autowired
 	private ProductService productservice;
+	
+	@Autowired
+	private ProductCategoryService productcatservice;
 	
 	
 	//Check with XML format later
@@ -39,14 +43,19 @@ public class ProductController {
 	@RequestMapping(value = "/products/{id}", method= RequestMethod.GET)
 	public Product getProductByID(@PathVariable("id") int product_id){
 		Product prdoduct = productservice.getProductByID(product_id);
-		//return Response.status((StatusType) Response.ok()).entity(prdoduct).build();
 		return prdoduct;
+	}
+	
+	@RequestMapping(value = "/multiproducts/{ids}")
+	public List<Product> getMultipleProducts(@PathVariable("ids") String prd_Ids){
+		List<Product> prdList = new ArrayList<Product>();
+		prdList = productservice.getMultipleProducts(prd_Ids);
+		return prdList;
 	}
 	
 	@RequestMapping(value = "/products", method= RequestMethod.POST)
 	public void addProduct(@RequestBody Product prd){
 		System.out.println("addProduct: "+prd.toString());
-		//Product prdoduct = productservice.addProduct(prd);
 		productservice.addProduct(prd);
 		//return Response.status((StatusType) Response.ok()).entity(prdoduct).build();
 		//return prdoduct;
@@ -64,6 +73,13 @@ public class ProductController {
 		System.out.println("deleteProduct: "+product_id);
 		productservice.deleteProduct(product_id);
 	}
+	
+	@RequestMapping(value = "/categories/{categoryName}", method=RequestMethod.GET)
+	public List<Product> getAllProductsByCategory(@PathVariable("categoryName") String categoryName){
+		System.out.println("getAllProductsByCategory: "+categoryName);
+		return productcatservice.getAllProductsByCategory(categoryName);
+	}
+	
 	
 	/*@RequestMapping(value = "/products/{prd_id}/prices")
 	public PriceController getPriceDetails(){

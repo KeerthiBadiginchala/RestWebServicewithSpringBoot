@@ -56,4 +56,7 @@ public interface ProductRepository {
 	@Delete("Delete from PRODUCT_PRICE where product_id=#{product_id}")
 	void deletePriceForTheProduct(int product_id);
 	
+	/*Products by Category*/
+	@Select("select product_id, product_name, sku, category, last_updated from Product where category = #{categoryName}")
+	List<Product> getAllProductsByCategory(String categoryName);
 }
