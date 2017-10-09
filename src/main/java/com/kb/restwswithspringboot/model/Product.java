@@ -2,6 +2,8 @@ package com.kb.restwswithspringboot.model;
 
 import java.sql.Date;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 public class Product {
 	
 	private int product_id;
@@ -9,7 +11,7 @@ public class Product {
 	private String sku;
 	private String category;
 	private Date last_updated;
-	private float price; //To display price
+	//private float price; //To display price
 	
 	Product(){
 		
@@ -57,12 +59,20 @@ public class Product {
 		this.last_updated = last_updated;
 	}
 
-	public float getPrice() {
+	@XmlTransient
+	/*public float getPrice() {
 		return price;
 	}
 
 	public void setPrice(float price) {
 		this.price = price;
+	}*/
+
+	@Override
+	public String toString() {
+		return "Product [product_id=" + product_id + ", product_name="
+				+ product_name + ", sku=" + sku + ", category=" + category
+				+ ", last_updated=" + last_updated + "]";
 	}
 	
 
