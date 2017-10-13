@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kb.restwswithspringboot.model.Product;
 import com.kb.restwswithspringboot.repository.ProductRepository;
 
 
 @Service("productservice")
+@Transactional
 public class ProductService {
 	
 	@Autowired
@@ -20,7 +22,13 @@ public class ProductService {
 	
 	public List<Product> getAllProducts(){
 		
-		return productrepository.getAllProducts(); 
+		//Lamda Expression Usage Purpose java1.8
+		List<Product> prdList = productrepository.getAllProducts(); 
+		prdList.forEach(prd -> System.out.println(prd));
+		System.out.println("check Lamda Expression:"+prdList.stream().filter(prd -> prd.getProduct_name().startsWith("A")).count());
+		//Lamda Chnages done
+		
+		return productrepository.getAllProducts();
 		
 	}
 	
@@ -30,8 +38,6 @@ public class ProductService {
 		
 		String[] args = ids.split(",");
 		for(int i=0;i<args.length;i++){
-			System.out.println("args["+i+"]"+args[i]);
-			System.out.println("Integer Conversion"+Integer.parseInt(args[i]));
 			Product prd = productrepository.getProductByID(Integer.parseInt(args[i]));
 			prdList.add(prd);
 		}
@@ -40,30 +46,68 @@ public class ProductService {
 	}
 	
 	public Product getProductByID(int prd_id){
-		
+		System.out.println("getProductByID, prd_id:"+prd_id);
 		return productrepository.getProductByID(prd_id); 
 	}
 	
-	public void addProduct(Product prd){
+	/*
+	 * Changed the method to insert the product details including price into 2 tables, Product and Product_Price
+	 * at a time and return the inserted Object.
+	 * void addPriceForTheProduct(ProdPrice) signature is going to change as Product addPriceForTheProduct(Product)
+	 */
+	public Product addProduct(Product prd){
 		
 		System.out.println("Product Service: addProduct:"+prd.getProduct_name()+".."+ prd.getSku()+".."+ prd.getCategory()+".."+ prd.getLast_updated());
+		int status = productrepository.insertProduct(prd);
+		System.out.println("insert status:"+status);
+		Product productObj= null;
 		try{
-		productrepository.insertProduct(prd); 
+			if(status == 1){ 
+				System.out.println("generated Product ID:"+prd.getProduct_id()+"prd Obj:"+prd.toString());
+				status = productrepository.addPriceForTheProduct(prd);
+				System.out.println("inserted price table status:"+status);
+				if(status == 1){
+					productObj = getProductByID(prd.getProduct_id());
+				}
+			}
+		
 		}catch(Exception ex){
 			//throw 
 		}
-		
-		//Work on it later, inserting into 2 tables at a time
-		//productrepository.insertProductPrice(prd);
+		return productObj;
 		
 	}
 	
-	public void updateProduct(Product prd){
-		productrepository.updateProduct(prd);
+	
+	/*
+	 * Changed the method to update the product details including price into 2 tables, Product and Product_Price
+	 * at a time and return the updated Object.
+	 * void updateProduct(ProdPrice) signature is going to change as Product updateProduct(Product)
+	 */
+	public Product updateProduct(Product prd){
+		int status = productrepository.updatePriceForTheProduct(prd);
+		Product productObj= null;
+		if(status == 1){ 
+			status = productrepository.updateProduct(prd);
+			if(status == 1){
+				productObj = getProductByID(prd.getProduct_id());
+			}
+		}
+		return productObj;
 	}
 	
-	public void deleteProduct(int prd_id){
-		productrepository.deleteProduct(prd_id);
+	
+	/*
+	 * Changed the method to delete the product details including price into 2 tables, Product and Product_Price
+	 * at a time and return the deleted Key.
+	 * void deleteProduct(ProdPrice) signature is going to change as int deleteProduct(Product)
+	 */
+	public int deleteProduct(int prd_id){
+		int status = productrepository.deletePriceForTheProduct(prd_id);
+		if(status == 1){ 
+			status = productrepository.deleteProduct(prd_id);
+		}
+		return status;
 	}
 	
 	

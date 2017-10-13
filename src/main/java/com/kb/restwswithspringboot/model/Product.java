@@ -11,7 +11,7 @@ public class Product {
 	private String sku;
 	private String category;
 	private Date last_updated;
-	//private float price; //To display price
+	private float price; 
 	
 	Product(){
 		
@@ -60,13 +60,13 @@ public class Product {
 	}
 
 	@XmlTransient
-	/*public float getPrice() {
+	public float getPrice() {
 		return price;
 	}
 
 	public void setPrice(float price) {
 		this.price = price;
-	}*/
+	}
 
 	@Override
 	public String toString() {

@@ -7,7 +7,7 @@ WHERE
 AND
     table_schema NOT IN ('pg_catalog', 'information_schema');
 
-
+SELECT * FROM INFORMATION_SCHEMA.sequences;
 
 DROP TABLE product;
 CREATE TABLE PRODUCT (
