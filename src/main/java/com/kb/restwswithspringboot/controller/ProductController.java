@@ -32,7 +32,6 @@ public class ProductController {
 	@Autowired
 	private ProductCategoryService productcatservice;
 
-
 	//Check with XML format later
 	@RequestMapping(value = "/products", method= RequestMethod.GET, produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public ResponseEntity<List<Product>> getAllProducts(){
