@@ -14,6 +14,7 @@ import com.kb.restwswithspringboot.model.*;
 import java.lang.invoke.MethodType;
 import java.util.*;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -57,7 +58,7 @@ public class ProductController {
 	 * i.e., Status, Headers and Response body.
 	 */
 	@RequestMapping(value = "/products", method= RequestMethod.POST)
-	public ResponseEntity<Product> addProduct(@RequestBody Product prd){
+	public ResponseEntity<Product> addProduct(@Valid @RequestBody Product prd) throws Exception{
 		System.out.println("addProduct: "+prd.toString());
 		Product product = productservice.addProduct(prd);
 		
@@ -66,7 +67,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/products/{id}", method= RequestMethod.PUT)
-	public ResponseEntity<Product> updateProduct(@PathVariable("id") int product_id, @RequestBody Product prd){
+	public ResponseEntity<Product> updateProduct(@PathVariable("id") int product_id, @RequestBody Product prd) throws Exception{
 		prd.setProduct_id(product_id);
 		System.out.println("updateProduct: "+prd.toString());
 		Product product = productservice.updateProduct(prd);
@@ -74,7 +75,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/products/{id}", method= RequestMethod.DELETE)
-	public ResponseEntity<Product> deleteProduct(@PathVariable("id") int product_id){
+	public ResponseEntity<Product> deleteProduct(@PathVariable("id") int product_id) throws Exception{
 		System.out.println("deleteProduct: "+product_id);
 		productservice.deleteProduct(product_id);
 		return new ResponseEntity<Product>(HttpStatus.NO_CONTENT);

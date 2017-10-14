@@ -1,5 +1,6 @@
 package com.kb.restwswithspringboot.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kb.restwswithspringboot.model.Product;
 import com.kb.restwswithspringboot.repository.ProductRepository;
+
+import exception.ResourceNotFoundException;
 
 
 @Service("productservice")
@@ -20,21 +23,25 @@ public class ProductService {
 	
 	
 	
+	@SuppressWarnings("unused")
 	public List<Product> getAllProducts(){
 		
-		//Lamda Expression Usage Purpose java1.8
+		//Lambda Expression Usage Purpose java1.8
 		List<Product> prdList = productrepository.getAllProducts(); 
 		prdList.forEach(prd -> System.out.println(prd));
 		System.out.println("check Lamda Expression:"+prdList.stream().filter(prd -> prd.getProduct_name().startsWith("A")).count());
-		//Lamda Chnages done
+		//Lambda Changes done
+		if(prdList == null) {
+			throw new ResourceNotFoundException("Product List is null");
+		}
 		
 		return productrepository.getAllProducts();
 		
 	}
 	
-	//Exception Handling Scope, Integer check
+	@SuppressWarnings("unused")
 	public List<Product> getMultipleProducts(String ids){
-		List<Product> prdList = new ArrayList<Product>();
+		List<Product> prdList = null;
 		
 		String[] args = ids.split(",");
 		for(int i=0;i<args.length;i++){
@@ -42,12 +49,20 @@ public class ProductService {
 			prdList.add(prd);
 		}
 		
+		if(prdList == null) {
+			throw new ResourceNotFoundException("Product List is null");
+		}
 		return prdList; 
 	}
 	
+	@SuppressWarnings("unused")
 	public Product getProductByID(int prd_id){
 		System.out.println("getProductByID, prd_id:"+prd_id);
-		return productrepository.getProductByID(prd_id); 
+		Product prd = productrepository.getProductByID(prd_id);
+		if(prd == null) {
+			throw new ResourceNotFoundException("Product doesn't exist");
+		}
+		return prd; 
 	}
 	
 	/*
@@ -55,7 +70,7 @@ public class ProductService {
 	 * at a time and return the inserted Object.
 	 * void addPriceForTheProduct(ProdPrice) signature is going to change as Product addPriceForTheProduct(Product)
 	 */
-	public Product addProduct(Product prd){
+	public Product addProduct(Product prd) throws SQLException{
 		
 		System.out.println("Product Service: addProduct:"+prd.getProduct_name()+".."+ prd.getSku()+".."+ prd.getCategory()+".."+ prd.getLast_updated());
 		int status = productrepository.insertProduct(prd);
@@ -72,7 +87,7 @@ public class ProductService {
 			}
 		
 		}catch(Exception ex){
-			//throw 
+			throw new SQLException(ex.getMessage()); 
 		}
 		return productObj;
 		
@@ -84,14 +99,19 @@ public class ProductService {
 	 * at a time and return the updated Object.
 	 * void updateProduct(ProdPrice) signature is going to change as Product updateProduct(Product)
 	 */
-	public Product updateProduct(Product prd){
+	public Product updateProduct(Product prd) throws SQLException{
 		int status = productrepository.updatePriceForTheProduct(prd);
 		Product productObj= null;
+		try{
+			
 		if(status == 1){ 
 			status = productrepository.updateProduct(prd);
 			if(status == 1){
 				productObj = getProductByID(prd.getProduct_id());
 			}
+		}
+		}catch(Exception ex){
+			throw new SQLException(ex.getMessage());
 		}
 		return productObj;
 	}
@@ -102,10 +122,14 @@ public class ProductService {
 	 * at a time and return the deleted Key.
 	 * void deleteProduct(ProdPrice) signature is going to change as int deleteProduct(Product)
 	 */
-	public int deleteProduct(int prd_id){
+	public int deleteProduct(int prd_id) throws SQLException{
 		int status = productrepository.deletePriceForTheProduct(prd_id);
+		try{
 		if(status == 1){ 
 			status = productrepository.deleteProduct(prd_id);
+		}
+		}catch(Exception ex){
+			throw new SQLException(ex.getMessage());
 		}
 		return status;
 	}

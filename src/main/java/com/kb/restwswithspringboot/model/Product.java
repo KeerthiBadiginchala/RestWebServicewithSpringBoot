@@ -2,15 +2,25 @@ package com.kb.restwswithspringboot.model;
 
 import java.sql.Date;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlTransient;
 
 public class Product {
 	
 	private int product_id;
+	
+	@NotNull(message="Product Name can't be null")
 	private String product_name;
 	private String sku;
+	
+	@NotNull(message="category can't be null")
 	private String category;
 	private Date last_updated;
+	
+	@NotNull(message="Price can't be null")
+	//@Pattern(regexp = "[0-9]", message="Only Decimal is allowed")
 	private float price; 
 	
 	Product(){
