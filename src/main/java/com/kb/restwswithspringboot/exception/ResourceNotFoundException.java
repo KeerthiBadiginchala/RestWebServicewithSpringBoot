@@ -1,4 +1,4 @@
-package exception;
+package com.kb.restwswithspringboot.exception;
 
 import javassist.SerialVersionUID;
 

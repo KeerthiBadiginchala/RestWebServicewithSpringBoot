@@ -1,4 +1,4 @@
-package exception;
+package com.kb.restwswithspringboot.exception;
 
 import java.sql.SQLException;
 

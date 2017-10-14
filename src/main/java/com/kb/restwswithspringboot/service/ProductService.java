@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kb.restwswithspringboot.exception.ResourceNotFoundException;
 import com.kb.restwswithspringboot.model.Product;
 import com.kb.restwswithspringboot.repository.ProductRepository;
-
-import exception.ResourceNotFoundException;
 
 
 @Service("productservice")
