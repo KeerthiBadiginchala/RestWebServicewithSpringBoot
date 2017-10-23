@@ -32,6 +32,11 @@ public class ProductController {
 
 	@Autowired
 	private ProductCategoryService productcatservice;
+	
+	@RequestMapping(value = "/dockertest", method= RequestMethod.GET, produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String testDocker(){
+		return "welcome to docker!";
+	}
 
 	//Check with XML format later
 	@RequestMapping(value = "/products", method= RequestMethod.GET, produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
